@@ -1,4 +1,5 @@
 # News Aggregator App
+![MergedImages](https://github.com/user-attachments/assets/e16d6cf2-60a2-4b5b-9c88-fd9f768ad206)
 
 ## Overview
 The News Aggregator App fetches and displays top US news headlines using NewsAPI. It follows Clean Architecture, utilizing Jetpack Compose, Hilt, and Coroutines.
