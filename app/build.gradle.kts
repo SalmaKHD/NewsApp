@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -9,6 +11,16 @@ plugins {
 android {
     namespace = "com.example.newsapp"
     compileSdk = 35
+
+    val localProperties = Properties().apply {
+        val localPropertiesFile = rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            load(localPropertiesFile.inputStream())
+        }
+    }
+    fun getEnvOrLocalProperty(envKey: String): String? {
+        return System.getenv(envKey) ?: localProperties.getProperty(envKey)
+    }
 
     defaultConfig {
         applicationId = "com.example.newsapp"
@@ -22,6 +34,14 @@ android {
         buildConfigField("String", "API_KEY", "\"${project.properties["API_KEY"]}\"")
     }
 
+    signingConfigs {
+        create("release") {
+            keyAlias = getEnvOrLocalProperty("KEY_ALIAS")
+            keyPassword = getEnvOrLocalProperty("KEY_PASSWORD")
+            storeFile = file(getEnvOrLocalProperty("STORE_FILE") ?: "")
+            storePassword = getEnvOrLocalProperty("KEY_STORE_PASSWORD")
+        }
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -29,6 +49,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {

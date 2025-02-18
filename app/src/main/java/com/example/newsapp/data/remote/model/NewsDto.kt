@@ -1,9 +1,10 @@
 package com.example.newsapp.data.remote.model
 
+import androidx.annotation.Keep
 import com.example.newsapp.ui.model.NewsUiModel
 import com.google.gson.annotations.SerializedName
 
-
+@Keep
 data class NewsDto(
     val status: String,
     val totalResults: Int,

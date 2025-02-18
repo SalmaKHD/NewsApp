@@ -2,6 +2,7 @@ package com.example.newsapp.data.remote
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.example.newsapp.BuildConfig
 import com.example.newsapp.data.remote.model.toUiModel
 import com.example.newsapp.ui.model.NewsUiModel
 import java.time.LocalDateTime
@@ -16,8 +17,8 @@ class NewsPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, NewsUiModel.NewsItemUiModel> {
         val page = params.key ?: 1
         val defaultSortedBy = "publishedAt"
-        val fromDate: String = LocalDateTime.now().minusDays(1).asIsoDateTime()
-        val toDate: String = LocalDateTime.now().minusDays(1).withHour(0).withMinute(0).withSecond(0).asIsoDateTime()
+        val fromDate: String = LocalDateTime.now().minusDays(1).withHour(0).withMinute(0).withSecond(0).asIsoDateTime()
+        val toDate: String = LocalDateTime.now().asIsoDateTime()
         val query = queries[(page - 1) % queries.size] // Cycle through the queries in the specified order
 
         return try {
