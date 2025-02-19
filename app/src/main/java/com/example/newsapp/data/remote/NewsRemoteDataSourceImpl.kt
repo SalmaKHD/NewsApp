@@ -14,6 +14,6 @@ class NewsRemoteDataSourceImpl @Inject constructor(
         page: Int,
         apiKey: String
     ): Result<NewsDto> {
-        return runCatching { newsApi.fetchNews(query, fromDate, toDate, sortBy, page, apiKey) }
+        return runCatching { newsApi.fetchNews(query, fromDate = fromDate, toDate = toDate, sortBy, page, apiKey) }
     }
 }

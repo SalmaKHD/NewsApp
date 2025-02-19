@@ -15,11 +15,14 @@ class NewsPagingSource(
     private val queries = listOf("Microsoft", "Apple", "Google", "Tesla")
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, NewsUiModel.NewsItemUiModel> {
-        val page = params.key ?: 1
+        val globalPage = params.key ?: 1
         val defaultSortedBy = "publishedAt"
         val fromDate: String = LocalDateTime.now().minusDays(1).withHour(0).withMinute(0).withSecond(0).asIsoDateTime()
         val toDate: String = LocalDateTime.now().asIsoDateTime()
-        val query = queries[(page - 1) % queries.size] // Cycle through the queries in the specified order
+
+        val companyIndex = (globalPage - 1) % queries.size
+        val query = queries[companyIndex]
+        val localPage = (globalPage - 1) / queries.size + 1 // Ensures each query starts at page 1
 
         return try {
             // Call the remote data source to fetch news
@@ -28,7 +31,7 @@ class NewsPagingSource(
                 fromDate = fromDate,
                 toDate = toDate,
                 sortBy = defaultSortedBy, // Sort by the date of publication
-                page = page,
+                page = localPage,
                 apiKey = BuildConfig.API_KEY
             )
 
@@ -41,8 +44,8 @@ class NewsPagingSource(
 
                 LoadResult.Page(
                     data = newsItems,
-                    prevKey = if (page == 1) null else page - 1,
-                    nextKey = if (newsItems.isEmpty()) null else page + 1
+                    prevKey = if (globalPage == 1) null else globalPage - 1,
+                    nextKey = if (newsItems.isEmpty()) null else globalPage + 1
                 )
             } else {
                 LoadResult.Error(Exception("Failed to fetch news"))

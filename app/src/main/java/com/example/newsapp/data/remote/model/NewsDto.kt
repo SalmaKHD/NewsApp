@@ -31,7 +31,7 @@ data class Source(
 
 fun Article.toUiModel(): NewsUiModel.NewsItemUiModel {
     return NewsUiModel.NewsItemUiModel(
-        id = this.hashCode(), // Using a hash code as a temporary ID, ideally you should have a unique ID
+        id = null, // todo: must be replaced with a reasonable id
         author = this.author,
         content = this.content,
         description = this.description,
